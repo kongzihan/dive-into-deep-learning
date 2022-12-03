@@ -6,14 +6,10 @@
  fashion MNIST 是一个10类服饰分类数据集
  -- 用 pytorch
 """
-import torch.utils.data
 import torchvision
 import torchvision.transforms as transforms
 import d2lzh as d2l
-import matplotlib_inline.backend_inline
-import sys
 from time import time
-import matplotlib.pyplot as plt
 
 
 # ======================    获取数据集     ====================
@@ -45,16 +41,16 @@ mnist_test = torchvision.datasets.FashionMNIST(
 
 # 下面定义一个可以在一行里画出多张图像的对应标签的函数
 def show_fashion_mnist(images, labels):
-    # d2l.use_svg_display()
-    matplotlib_inline.backend_inline.set_matplotlib_formats('svg')
+    d2l.use_svg_display()
+    # matplotlib_inline.backend_inline.set_matplotlib_formats('svg')
     # 这里的_表示我们忽略（不适用）的变量
-    _, figs = plt.subplots(1, len(images), figsize=(12, 12))
+    _, figs = d2l.plt.subplots(1, len(images), figsize=(12, 12))
     for f, img, lbl in zip(figs, images, labels):
         f.imshow(img.view((28, 28)).numpy())
         f.set_title(lbl)
         f.axes.get_xaxis().set_visible(False)
         f.axes.get_yaxis().set_visible(False)
-    plt.show()
+    d2l.plt.show()
 
 
 # 看一下训练数据集中前10个样本的图像内容和文本标签
@@ -74,17 +70,18 @@ show_fashion_mnist(X, get_fashion_mnist_labels(y))
 # 使用多进程加速数据读取
 # pytorch 中的 DataLoader允许使用多进程来加速数据读取
 batch_size = 256
-if sys.platform.startswith('win'):
-    # 0表示不用额外的进程来加速读取数据
-    num_workers = 0
-else:
-    num_workers = 4
-train_iter = torch.utils.data.DataLoader(
-    mnist_train, batch_size=batch_size, shuffle=True,
-    num_workers=num_workers)
-test_iter = torch.utils.data.DataLoader(
-    mnist_test, batch_size=batch_size, shuffle=False,
-    num_workers=num_workers)
+# if sys.platform.startswith('win'):
+#     # 0表示不用额外的进程来加速读取数据
+#     num_workers = 0
+# else:
+#     num_workers = 4
+# train_iter = torch.utils.data.DataLoader(
+#     mnist_train, batch_size=batch_size, shuffle=True,
+#     num_workers=num_workers)
+# test_iter = torch.utils.data.DataLoader(
+#     mnist_test, batch_size=batch_size, shuffle=False,
+#     num_workers=num_workers)
+train_iter, test_iter = d2l.load_data_fashion_mnist(batch_size)
 
 # 查看读取一遍训练数据需要的时间
 start = time()
