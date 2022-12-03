@@ -1,7 +1,10 @@
-from IPython import display
 import matplotlib.pyplot as plt
 import matplotlib_inline.backend_inline
 import torch
+import torch.utils.data
+import torchvision
+import torchvision.transforms as transforms
+import sys
 
 
 # 在作图前只需要调用 d2lzh.set_figsize() 即可打印矢量图并设置图的尺寸。
@@ -15,6 +18,32 @@ def set_figsize(figsize=(3.5, 2.5)):
     use_svg_display()
     # 设置图的尺寸
     plt.rcParams['figure.figsize'] = figsize
+
+
+# 读取数据集
+def load_data_fashion_mnist(batch_size):
+    # 获取数据集
+    # 通过 torchvision 的torchvision.datasets 来下载这个数据集
+    mnist_train = torchvision.datasets.FashionMNIST(
+        root='data/FashionMNIST', train=True, download=True,
+        transform=transforms.ToTensor())
+
+    mnist_test = torchvision.datasets.FashionMNIST(
+        root='data/FashionMNIST', train=False, download=True,
+        transform=transforms.ToTensor())
+    # 使用多进程加速数据读取
+    if sys.platform.startswith('win'):
+        # 0表示不用额外的进程来加速读取数据
+        num_workers = 0
+    else:
+        num_workers = 4
+    train_iter = torch.utils.data.DataLoader(
+        mnist_train, batch_size=batch_size, shuffle=True,
+        num_workers=num_workers)
+    test_iter = torch.utils.data.DataLoader(
+        mnist_test, batch_size=batch_size, shuffle=False,
+        num_workers=num_workers)
+    return train_iter, test_iter
 
 
 # =======================  定义模型  ======================
