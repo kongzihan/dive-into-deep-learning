@@ -7,6 +7,7 @@ import torchvision.transforms as transforms
 import sys
 
 
+# =======================  打印图  ======================
 # 在作图前只需要调用 d2lzh.set_figsize() 即可打印矢量图并设置图的尺寸。
 def use_svg_display():
     # 用矢量图显示
@@ -20,7 +21,7 @@ def set_figsize(figsize=(3.5, 2.5)):
     plt.rcParams['figure.figsize'] = figsize
 
 
-# 读取数据集
+# =======================  读取数据集  ======================
 def load_data_fashion_mnist(batch_size):
     # 获取数据集
     # 通过 torchvision 的torchvision.datasets 来下载这个数据集
